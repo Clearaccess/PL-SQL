@@ -1,0 +1,40 @@
+/*1.1	
+Выбрать из таблицы Orders заказы, которые были доставлены после 5 мая 1998 года (колонка shippedDate) включительно и которые доставлены с shipVia >= 2. 
+Формат указания даты должен быть верным при любых региональных настройках. 
+Этот метод использовать далее для всех заданий. 
+Запрос должен выбирать только колонки orderID, shippedDate и shipVia. 
+Пояснить, почему сюда не попали заказы с NULL-ом в колонке shippedDate. */
+
+SELECT orderID, shippedDate, shipVia
+FROM ORDERS 
+WHERE shippedDate>=TO_DATE('05.05.1998', 'DD.MM.YYYY') AND shipVia>=2;
+
+/*1.2	
+Написать запрос, который выводит только недоставленные заказы из таблицы Orders. 
+В результатах запроса высвечивать для колонки shippedDate вместо значений NULL строку ‘Not Shipped’ – необходимо использовать CASЕ выражение. 
+Запрос должен выбирать только колонки orderID и shippedDate.*/
+
+SELECT orderID, 
+CASE 
+WHEN shippedDate IS NULL THEN 'Not Shipped'
+ELSE TO_CHAR(shippedDate)
+END
+FROM ORDERS 
+WHERE shippedDate IS NULL;
+
+/*1.3	
+Выбрать из таблици Orders заказы, которые были доставлены после 5 мая 1998 года (shippedDate), не включая эту дату, или которые еще не доставлены. 
+Запрос должен выбирать только колонки orderID (переименовать в Order Number) и shippedDate (переименовать в Shipped Date). 
+В результатах запроса  для колонки shippedDate вместо значений NULL выводить строку ‘Not Shipped’ (необходимо использовать функцию NVL), для остальных значений высвечивать дату в формате “ДД.ММ.ГГГГ”.
+*/
+
+ALTER TABLE Orders
+RENAME COLUMN OrderID TO "Order Number";
+
+ALTER TABLE Orders
+RENAME COLUMN shippedDate TO "Shipped Date";
+
+SELECT "Order Number", NVL(TO_CHAR("Shipped Date",'DD.MM.YYYY'),'Not Shipped')
+FROM ORDERS
+WHERE ("Shipped Date" IS NULL) OR ("Shipped Date">TO_DATE('05.05.1998', 'DD.MM.YYYY'));
+
